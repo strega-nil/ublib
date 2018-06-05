@@ -132,7 +132,7 @@ auto box<_Ty, _Alloc>::operator=(box const& __other) -> box& {
     }
   }
 
-  return __self;
+  return *this;
 }
 
 template <typename _Ty, typename _Alloc>
@@ -327,7 +327,7 @@ auto operator!=(
     box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs == *__rhs)) {
   if (not __lhs and not __rhs) {
     return false;
-  } else if (lhs and rhs) {
+  } else if (__lhs and __rhs) {
     return *__lhs != *__rhs;
   } else {
     return true;
