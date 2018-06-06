@@ -221,6 +221,15 @@ auto box<_Ty, _Alloc>::operator*() const -> const_reference {
 }
 
 template <typename _Ty, typename _Alloc>
+auto box<_Ty, _Alloc>::operator-> () -> pointer {
+  return __underlying.__pointer;
+}
+template <typename _Ty, typename _Alloc>
+auto box<_Ty, _Alloc>::operator-> () const -> const_pointer {
+  return __underlying.__pointer;
+}
+
+template <typename _Ty, typename _Alloc>
 auto box<_Ty, _Alloc>::get() noexcept -> pointer {
   return __underlying.__pointer;
 }
@@ -312,7 +321,8 @@ auto box<_Ty, _Alloc>::get_allocator() const -> allocator_type {
 template <typename _T1, typename _A1, typename _T2, typename _A2>
 auto operator==(
     box<_T1, _A1> const& __lhs,
-    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs == *__rhs)) {
+    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs == *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs == *__rhs)> {
   if (not __lhs and not __rhs) {
     return true;
   } else if (__lhs and __rhs) {
@@ -324,7 +334,8 @@ auto operator==(
 template <typename _T1, typename _A1, typename _T2, typename _A2>
 auto operator!=(
     box<_T1, _A1> const& __lhs,
-    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs == *__rhs)) {
+    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs != *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)> {
   if (not __lhs and not __rhs) {
     return false;
   } else if (__lhs and __rhs) {
@@ -336,7 +347,8 @@ auto operator!=(
 
 template <typename _T1, typename _A1, typename _T2, typename _A2>
 auto operator<(box<_T1, _A1> const& __lhs, box<_T2, _A2> const& __rhs) noexcept(
-    noexcept(*__lhs < *__rhs)) {
+    noexcept(*__lhs < *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)> {
   if (not __lhs and not __rhs) {
     return false;
   } else if (not __lhs and __rhs) {
@@ -349,7 +361,8 @@ auto operator<(box<_T1, _A1> const& __lhs, box<_T2, _A2> const& __rhs) noexcept(
 }
 template <typename _T1, typename _A1, typename _T2, typename _A2>
 auto operator>(box<_T1, _A1> const& __lhs, box<_T2, _A2> const& __rhs) noexcept(
-    noexcept(*__lhs > *__rhs)) {
+    noexcept(*__lhs > *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)> {
   if (not __lhs and not __rhs) {
     return false;
   } else if (__lhs and not __rhs) {
@@ -364,7 +377,8 @@ auto operator>(box<_T1, _A1> const& __lhs, box<_T2, _A2> const& __rhs) noexcept(
 template <typename _T1, typename _A1, typename _T2, typename _A2>
 auto operator<=(
     box<_T1, _A1> const& __lhs,
-    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs <= *__rhs)) {
+    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs <= *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)> {
   if (not __lhs and not __rhs) {
     return true;
   } else if (not __lhs and __rhs) {
@@ -378,7 +392,8 @@ auto operator<=(
 template <typename _T1, typename _A1, typename _T2, typename _A2>
 auto operator>=(
     box<_T1, _A1> const& __lhs,
-    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs >= *__rhs)) {
+    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs >= *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)> {
   if (not __lhs and not __rhs) {
     return true;
   } else if (__lhs and not __rhs) {

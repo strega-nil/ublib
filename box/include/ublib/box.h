@@ -33,8 +33,8 @@ struct __box_pair<_Ptr, _Alloc, true> : _Alloc {
 
 template <typename _Ptr, typename _Alloc>
 struct __box_pair<_Ptr, _Alloc, false> {
-  _Alloc __alloc;
   _Ptr __pointer;
+  _Alloc __alloc;
 
   __box_pair() = default;
 
@@ -56,9 +56,8 @@ class box {
   constexpr static bool __poccma =
       __allocator_traits::propagate_on_container_move_assignment();
   constexpr static bool __pocs =
-      __allocator_traits::propagate_on_container_move();
-  constexpr static bool __always_equal =
-      __allocator_traits::is_always_equal();
+      __allocator_traits::propagate_on_container_swap();
+  constexpr static bool __always_equal = __allocator_traits::is_always_equal();
 
   __box_pair<typename __allocator_traits::pointer, _Alloc> __underlying;
 
@@ -127,6 +126,9 @@ public:
   reference operator*();
   const_reference operator*() const;
 
+  pointer operator->();
+  const_pointer operator->() const;
+
   pointer get() noexcept;
   const_pointer get() const noexcept;
 
@@ -157,29 +159,35 @@ public:
 
 // comparisons
 template <typename _T1, typename _A1, typename _T2, typename _A2>
-bool operator==(
+auto operator==(
     box<_T1, _A1> const& __lhs,
-    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs == *__rhs));
+    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs == *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs == *__rhs)>;
 template <typename _T1, typename _A1, typename _T2, typename _A2>
-bool operator!=(
+auto operator!=(
     box<_T1, _A1> const& __lhs,
-    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs != *__rhs));
+    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs != *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)>;
 
 template <typename _T1, typename _A1, typename _T2, typename _A2>
-bool operator<(box<_T1, _A1> const& __lhs, box<_T2, _A2> const& __rhs) noexcept(
-    noexcept(*__lhs < *__rhs));
+auto operator<(box<_T1, _A1> const& __lhs, box<_T2, _A2> const& __rhs) noexcept(
+    noexcept(*__lhs < *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)>;
 template <typename _T1, typename _A1, typename _T2, typename _A2>
-bool operator>(box<_T1, _A1> const& __lhs, box<_T2, _A2> const& __rhs) noexcept(
-    noexcept(*__lhs > *__rhs));
+auto operator>(box<_T1, _A1> const& __lhs, box<_T2, _A2> const& __rhs) noexcept(
+    noexcept(*__lhs > *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)>;
 
 template <typename _T1, typename _A1, typename _T2, typename _A2>
-bool operator<=(
+auto operator<=(
     box<_T1, _A1> const& __lhs,
-    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs <= *__rhs));
+    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs <= *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)>;
 template <typename _T1, typename _A1, typename _T2, typename _A2>
-bool operator>=(
+auto operator>=(
     box<_T1, _A1> const& __lhs,
-    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs >= *__rhs));
+    box<_T2, _A2> const& __rhs) noexcept(noexcept(*__lhs >= *__rhs))
+    -> std::common_type_t<bool, decltype(*__lhs != *__rhs)>;
 
 } // namespace ublib
 
