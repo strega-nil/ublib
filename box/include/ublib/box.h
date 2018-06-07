@@ -51,13 +51,13 @@ template <typename _Ty, typename _Alloc = std::allocator<_Ty>>
 class box {
   using __allocator_traits = std::allocator_traits<_Alloc>;
 
-  constexpr static bool __poccca =
-      __allocator_traits::propagate_on_container_copy_assignment();
-  constexpr static bool __poccma =
-      __allocator_traits::propagate_on_container_move_assignment();
-  constexpr static bool __pocs =
-      __allocator_traits::propagate_on_container_swap();
-  constexpr static bool __always_equal = __allocator_traits::is_always_equal();
+  using __poccca =
+      typename __allocator_traits::propagate_on_container_copy_assignment;
+  using __poccma =
+      typename __allocator_traits::propagate_on_container_move_assignment;
+  using __pocs =
+      typename __allocator_traits::propagate_on_container_swap;
+  using __always_equal = typename __allocator_traits::is_always_equal;
 
   __box_pair<typename __allocator_traits::pointer, _Alloc> __underlying;
 
@@ -117,7 +117,7 @@ public:
 
   void clear() noexcept;
 
-  void swap(box&) noexcept(__pocs or __always_equal);
+  void swap(box&) noexcept(__pocs() or __always_equal());
 
   // destructor
   ~box();

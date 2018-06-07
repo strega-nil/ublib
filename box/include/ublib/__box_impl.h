@@ -35,14 +35,7 @@ box<_Ty, _Alloc>::box(box const& __other)
     : __underlying(
           nullptr, __alloc_copy_construct(__other.__underlying.__allocator())) {
   if (__other) {
-    _Alloc& __alloc = __underlying.__allocator();
-    auto __new_ptr = __allocator_traits::allocate(__alloc, 1);
-    try {
-      __allocator_traits::construct(__alloc, __unfancy(__new_ptr), *__other);
-    } catch (...) {
-      __allocator_traits::deallocate(__alloc, __new_ptr, 1);
-      throw;
-    }
+    __emplace_empty(*__other);
   }
 }
 
@@ -94,14 +87,14 @@ box<_Ty, _Alloc>::box(
 template <typename _Ty, typename _Alloc>
 auto box<_Ty, _Alloc>::operator=(box&& __other) noexcept -> box& {
   using std::swap;
-  if constexpr (__poccma) {
+  if constexpr (__poccma()) {
     clear();
     if (__underlying.__allocator() != __other.__underlying.__allocator()) {
       __underlying.__allocator() =
           std::move(__other.__underlying.__allocator());
     }
     swap(__underlying.__pointer, __other.__underlying.__pointer);
-  } else if constexpr (__always_equal) {
+  } else if constexpr (__always_equal()) {
     clear();
     swap(__underlying.__pointer, __other.__underlying.__pointer);
   } else if (__other and *this) {
@@ -116,7 +109,7 @@ auto box<_Ty, _Alloc>::operator=(box&& __other) noexcept -> box& {
 template <typename _Ty, typename _Alloc>
 auto box<_Ty, _Alloc>::operator=(box const& __other) -> box& {
   if (std::addressof(__other) != this) {
-    if constexpr (__poccca) {
+    if constexpr (__poccca()) {
       if (__underlying.__allocator() != __other.__underlying.__allocator()) {
         clear();
         __underlying.__allocator = __other.__underlying.__allocator();
@@ -185,12 +178,12 @@ void box<_Ty, _Alloc>::clear() noexcept {
 }
 
 template <typename _Ty, typename _Alloc>
-void box<_Ty, _Alloc>::swap(box& __other) noexcept(__pocs or __always_equal) {
+void box<_Ty, _Alloc>::swap(box& __other) noexcept(__pocs() or __always_equal()) {
   using std::swap;
-  if constexpr (__pocs) {
+  if constexpr (__pocs()) {
     swap(__underlying.__allocator(), __other.__underlying.__allocator());
     swap(__underlying.__pointer, __other.__underlying.__pointer);
-  } else if constexpr (__always_equal) {
+  } else if constexpr (__always_equal()) {
     swap(__underlying.__pointer, __other.__underlying.__pointer);
   } else if (__underlying.__allocator() == __other.__underlying.__allocator()) {
     swap(__underlying.__pointer, __other.__underlying.__pointer);
