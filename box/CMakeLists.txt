@@ -1,16 +1,16 @@
-add_library(ublib_box INTERFACE)
+add_library(ublib-box INTERFACE)
 
-target_compile_features(ublib_box INTERFACE cxx_std_17)
+target_compile_features(ublib-box INTERFACE cxx_std_17)
 
-add_subdirectory("pimpl-test")
-add_subdirectory("recursive-test")
+add_subdirectory("test-pimpl")
+add_subdirectory("test-recursive")
 
 if (MSVC)
-  target_compile_options(ublib_box
+  target_compile_options(ublib-box
     INTERFACE
 	  -permissive-)
 endif()
 
-target_include_directories(ublib_box
+target_include_directories(ublib-box
   INTERFACE
     "include")
