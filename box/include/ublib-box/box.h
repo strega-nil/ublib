@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _UBLIB_BOX_H
+#define _UBLIB_BOX_H
 
 #include <cstddef>
 #include <memory>
@@ -191,4 +192,6 @@ auto operator>=(
 
 } // namespace ublib
 
-#include "__box_impl.h"
+#include <ublib-box/__impl.h>
+
+#endif

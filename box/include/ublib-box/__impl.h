@@ -1,11 +1,12 @@
-#include "__utility.h"
+#include <ublib-internal/utility.h>
 
 namespace ublib {
 
 template <typename _Ptr>
-auto __unfancy(_Ptr p) {
+auto __box_unfancy(_Ptr p) {
   return std::addressof(*p);
 }
+
 // constructors
 template <typename _Ty, typename _Alloc>
 box<_Ty, _Alloc>::box(std::allocator_arg_t, _Alloc const& __alloc)
@@ -135,7 +136,7 @@ void box<_Ty, _Alloc>::__emplace_empty(_Tys&&... __tys) {
   auto __new_ptr = __allocator_traits::allocate(__allocator, 1);
   try {
     __allocator_traits::construct(
-        __allocator, __unfancy(__new_ptr), std::forward<_Tys>(__tys)...);
+        __allocator, __box_unfancy(__new_ptr), std::forward<_Tys>(__tys)...);
   } catch (...) {
     __allocator_traits::deallocate(__allocator, __new_ptr, 1);
     throw;
@@ -146,10 +147,10 @@ template <typename _Ty, typename _Alloc>
 template <typename... _Tys>
 void box<_Ty, _Alloc>::emplace(_Tys&&... __tys) {
   if (*this) {
-    __allocator_traits::destroy(__unfancy(__underlying.__pointer));
+    __allocator_traits::destroy(__box_unfancy(__underlying.__pointer));
     try {
       __allocator_traits::construct(
-          __unfancy(__underlying.__pointer), std::forward<_Tys>(__tys)...);
+          __box_unfancy(__underlying.__pointer), std::forward<_Tys>(__tys)...);
     } catch (...) {
       __allocator_traits::deallocate(__underlying.__pointer, 1);
       throw;
@@ -172,7 +173,7 @@ void box<_Ty, _Alloc>::clear() noexcept {
   if (*this) {
     auto& __allocator = __underlying.__allocator();
     auto __ptr = std::exchange(__underlying.__pointer, nullptr);
-    __allocator_traits::destroy(__allocator, __unfancy(__ptr));
+    __allocator_traits::destroy(__allocator, __box_unfancy(__ptr));
     __allocator_traits::deallocate(__allocator, __ptr, 1);
   }
 }

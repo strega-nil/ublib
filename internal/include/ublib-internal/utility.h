@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _UBLIB_INTERNAL_UTILITY_H
+#define _UBLIB_INTERNAL_UTILITY_H
 
 #if !defined(NDEBUG)
 #include <iostream>
@@ -24,8 +25,10 @@
 
 #define __ublib_undefined_behavior(msg)\
   ([] {\
-    std::cerr << msg << " at " << __FILE__ << ", " << __LINE__;\
+    std::cerr << msg << '\n';\
     std::abort();\
   }())
+
+#endif
 
 #endif

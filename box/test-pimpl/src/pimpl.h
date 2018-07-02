@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iosfwd>
-#include <ublib/box.h>
+#include <ublib-box/box.h>
 
 class pimpl_test {
   class pimpl;
